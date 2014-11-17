@@ -1,0 +1,14 @@
+{
+    "name": "Loqui.im",
+    "version": "v0.3.4a",
+    "dependencies": {
+        "coseme": "~1.0",
+        "otr": "~0.2",
+        "async": "~0.1",
+        "webL10n": "*",
+        "strophe": "~1.1",
+        "strophejs-plugins": "https://github.com/aarizkuren/strophejs-plugins.git#~0.1",
+        "quojs": "~3.0",
+        "promise-polyfill": "~1.1"
+    }
+}
