@@ -80,8 +80,8 @@ var Message = function (account, core, options) {
     var message = this;
     var chat = this.chat;
     chat.messageAppend.push({msg: message.core}, function (blockIndex) {
-      if ($('section#chat').data('jid') == chat.core.jid && $('section#chat').hasClass('show')) {
-        var ul = $('section#chat ul#messages');
+      if ($$('section#chat').data('jid') == chat.core.jid && $$('section#chat').hasClass('show')) {
+        var ul = $$('section#chat ul#messages');
         var li = ul.children('li[data-chunk="' + blockIndex + '"]');
         var last = li.children('div').last();
         var avatarize = last.data('from') != message.core.from;
@@ -89,13 +89,13 @@ var Message = function (account, core, options) {
         var conv = Tools.convenientDate(message.core.stamp);
         if (li.length) {
           if (timeDiff) {
-            li.append($('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
+            li.append($$('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
           }
           li.append(message.preRender(false, avatarize));
         } else {
-          var li = $('<li/>').addClass('chunk').data('chunk', blockIndex);
+          var li = $$('<li/>').addClass('chunk').data('chunk', blockIndex);
           if (timeDiff) {
-            li.append($('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
+            li.append($$('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
           }
           li.append(message.preRender(false, avatarize));
           ul.append(li);
@@ -122,21 +122,21 @@ var Message = function (account, core, options) {
       msg: message.core,
       delay: !account.connector.isConnected()
     }, function (blockIndex) {
-      if ($('section#chat').data('jid') == to && $('section#chat').hasClass('show')) {
-        var ul = $('section#chat ul#messages');
+      if ($$('section#chat').data('jid') == to && $$('section#chat').hasClass('show')) {
+        var ul = $$('section#chat ul#messages');
         var li = ul.children('li[data-chunk="' + blockIndex + '"]');
         var last = li.children('div').last();
         var timeDiff = Tools.unstamp(message.core.stamp) - Tools.unstamp(last.data('stamp')) > 300000;
         var conv = Tools.convenientDate(message.core.stamp);
         if (li.length) {
           if (timeDiff) {
-            li.append($('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
+            li.append($$('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
           }
           li.append(message.preRender());
         } else {
-          var li = $('<li/>').addClass('chunk').data('chunk', blockIndex);
+          var li = $$('<li/>').addClass('chunk').data('chunk', blockIndex);
           if (timeDiff) {
-            li.append($('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
+            li.append($$('<time/>').attr('datetime', message.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
           }
           li.append(message.preRender());
           ul.append(li);
@@ -154,7 +154,7 @@ var Message = function (account, core, options) {
     if (this.core.text) {
       var html = App.emoji[Providers.data[this.account.core.provider].emoji].fy(Tools.urlHL(Tools.HTMLescape(this.core.text)));
     } else if (this.core.media) {
-      var html = $('<img/>').attr('src', this.core.media.thumb).data('url', this.core.media.url).data('downloaded', this.core.media.downloaded || false);
+      var html = $$('<img/>').attr('src', this.core.media.thumb).data('url', this.core.media.url).data('downloaded', this.core.media.downloaded || false);
       switch (this.core.media.type) {
         case 'url':
           html.addClass('maps');
@@ -187,7 +187,7 @@ var Message = function (account, core, options) {
             if (ext == 'aac') {
               ext = 'mp3';
             }
-            var localUrl = App.pathFiles + $(e.target).closest('[data-stamp]').data('stamp').replace(/[-:]/g, '') + url.split('/').pop().substring(0, 5).toUpperCase() + '.' + ext;
+            var localUrl = App.pathFiles + $$(e.target).closest('[data-stamp]').data('stamp').replace(/[-:]/g, '') + url.split('/').pop().substring(0, 5).toUpperCase() + '.' + ext;
             if (img.dataset.downloaded == 'true') {
               Store.SD.recover(localUrl, function (blob) {
                 open(blob);
@@ -196,7 +196,7 @@ var Message = function (account, core, options) {
               Tools.fileGet(url, function (blob) {
                 Store.SD.save(localUrl, blob, function () {
                   open(blob);
-                  var index = [$(img).closest('li[data-chunk]').data('chunk'), $(img).closest('div[data-index]').data('index')];
+                  var index = [$$(img).closest('li[data-chunk]').data('chunk'), $$(img).closest('div[data-index]').data('index')];
                   Store.recover(index[0], function (chunk) {
                     Tools.log(chunk, index);
                     chunk[index[1]].media.downloaded = true;
@@ -216,7 +216,7 @@ var Message = function (account, core, options) {
       html.bind('click', onClick);
       var onDivClick = function(e) {
         e.preventDefault();
-        var target = $(e.target);
+        var target = $$(e.target);
         var span = target[0].lastChild;
         if (span) {
           var img = span.firstChild;
@@ -228,8 +228,8 @@ var Message = function (account, core, options) {
     var contact = Lungo.Core.findByProperty(this.account.core.roster, 'jid', Strophe.getBareJidFromJid(this.core.from));
     var name = type == 'in' ? ((contact ? (contact.name || contact.jid) : (this.core.pushName || this.core.from))).split(' ').slice(0, 2).join(' ') : _('Me');
     var day = Tools.day(this.core.stamp);
-    var div = $('<div/>').data('type', type);
-    var index = index || parseInt($('section#chat ul#messages li > div').last().data('index')) + 1;
+    var div = $$('<div/>').data('type', type);
+    var index = index || parseInt($$('section#chat ul#messages li > div').last().data('index')) + 1;
     index = index >= App.defaults.Chat.chunkSize ? 0 : index;
     div.data('index', index);
     div.data('stamp', this.core.stamp);
@@ -241,21 +241,21 @@ var Message = function (account, core, options) {
       div.data('media-type', this.core.media.type);
     }
     if (avatarize) {
-      var pic = $('<span/>').addClass('avatar hideable').append(
-        $('<img/>').data('jid', type == 'in' ? this.core.from : this.account.core.user)
+      var pic = $$('<span/>').addClass('avatar hideable').append(
+        $$('<img/>').data('jid', type == 'in' ? this.core.from : this.account.core.user)
       );
-      var nameSpan = $('<span/>').addClass('name').style('color', Tools.nickToColor(this.core.from)).text(name);
+      var nameSpan = $$('<span/>').addClass('name').style('color', Tools.nickToColor(this.core.from)).text(name);
       div.append(pic).append(nameSpan).addClass('extended');
     }
     if (html) {
-      var textSpan = $('<span/>').addClass('text').html(html);
+      var textSpan = $$('<span/>').addClass('text').html(html);
       div.append(textSpan);
     }
     if (onDivClick !== undefined) {
       div[0].onclick = onDivClick;
     }
     div.on('hold', function (e) {
-      Activity('chat', null, $(this).children('.text').text());
+      Activity('chat', null, $$(this).children('.text').text());
     });
   	return div[0];
   }

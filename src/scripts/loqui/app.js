@@ -234,7 +234,7 @@ var App = {
       account.accountRender();
       account.presenceRender();
     }
-    $('section#main').attr('data-show', 'na');
+    $$('section#main').attr('data-show', 'na');
   },
   
   // Update an array and put it in storage
@@ -260,16 +260,16 @@ var App = {
   
   // Render settings switches
   switchesRender: function () {
-    var ul = $('section#settings article#features ul').empty();
-    var body = $('body');
+    var ul = $$('section#settings article#features ul').empty();
+    var body = $$('body');
     for (var key in App.defaults.App.settings) {
       if (!(key in this.settings)) {
         this.settings[key] = App.defaults.App.settings[key];
       }
       var value = this.settings[key];
-      var li = $('<li><span></span><switch/></li>');
+      var li = $$('<li><span></span><switch/></li>');
       li.children('span').text(_('Set' + key));
-      var div = $('<div class="switch"><div class="ball"></div><img src="img/tick.svg" class="tick" /></div>')
+      var div = $$('<div class="switch"><div class="ball"></div><img src="img/tick.svg" class="tick" /></div>')
       li.children('switch').replaceWith(div);
       li.data('key', key);
       li.data('value', value);
@@ -296,13 +296,13 @@ var App = {
   },
 
   switchesDevRender: function () {
-    var ul = $('section#settings article#devmode ul').empty();
-    var body = $('body');
+    var ul = $$('section#settings article#devmode ul').empty();
+    var body = $$('body');
     for (var key in this.devsettings) {
       var value = this.devsettings[key];
-      var li = $('<li><span></span><switch/></li>');
+      var li = $$('<li><span></span><switch/></li>');
       li.children('span').text(_('Set' + key));
-      var div = $('<div class="switch"><div class="ball"></div><img src="img/tick.svg" class="tick" /></div>')
+      var div = $$('<div class="switch"><div class="ball"></div><img src="img/tick.svg" class="tick" /></div>')
       li.children('switch').replaceWith(div);
       li.data('key', key);
       li.data('value', value);
@@ -359,7 +359,7 @@ var App = {
   // Play a sound
   audio: function (file) {
     if (App.settings.sound && !document.hidden) {
-      $('audio[src="audio/' + file + '.ogg"]')[0].play();
+      $$('audio[src="audio/' + file + '.ogg"]')[0].play();
     }
   },
   

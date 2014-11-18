@@ -4,8 +4,8 @@ var Plus = {
 
   bolt: function () {
     var account = Messenger.account();
-    var to = $('section#chat').data('jid');
-    $('section#chat nav#plus').removeClass('show');
+    var to = $$('section#chat').data('jid');
+    $$('section#chat nav#plus').removeClass('show');
     if (to && App.online && account.connector.connection.connected){
       if (account.supports('attention')) {
         account.connector.attentionSend(to);
@@ -25,7 +25,7 @@ var Plus = {
   imageSend: function () {
     var account = Messenger.account();
     if (account.supports('imageSend')) {
-    var to = $('section#chat').data('jid');
+    var to = $$('section#chat').data('jid');
       var e = new MozActivity({
         name: 'pick',
         data: {
@@ -44,7 +44,7 @@ var Plus = {
   videoSend: function () {
     var account = Messenger.account();
     if (account.supports('videoSend')) {
-    var to = $('section#chat').data('jid');
+    var to = $$('section#chat').data('jid');
       var e = new MozActivity({
         name: 'pick',
         data: {
@@ -63,7 +63,7 @@ var Plus = {
   audioSend: function () {
     var account = Messenger.account();
     if (account.supports('audioSend')) {
-    var to = $('section#chat').data('jid');
+    var to = $$('section#chat').data('jid');
       var e = new MozActivity({
         name: 'pick',
         data: {
@@ -82,7 +82,7 @@ var Plus = {
   locationSend: function () {
     var account = Messenger.account();
     if (account.supports('locationSend')) {
-      var to = $('section#chat').data('jid');
+      var to = $$('section#chat').data('jid');
       Geo.posGet(function (loc) {
         account.connector.locationSend(to, loc);
       });
@@ -96,7 +96,7 @@ var Plus = {
   },
   
   switchOTR: function (jid, account) {
-    $('section#chat nav#plus').removeClass('show');
+    $$('section#chat nav#plus').removeClass('show');
     var account = account || Messenger.account();
     var ci = account.chatFind(jid);
     if (ci < 0) {
@@ -174,16 +174,16 @@ var Plus = {
         case OTR.CONST.STATUS_AKE_SUCCESS:
           if (chat.OTR.msgstate === OTR.CONST.MSGSTATE_ENCRYPTED) {
             // The chat is secure
-            $('section#chat[data-jid="' + chat.core.jid + '"]').data('otr', 'true');
+            $$('section#chat[data-jid="' + chat.core.jid + '"]').data('otr', 'true');
           } else {
             // The chat is no longer secure
-            $('section#chat[data-jid="' + chat.core.jid + '"]').data('otr', 'false');
+            $$('section#chat[data-jid="' + chat.core.jid + '"]').data('otr', 'false');
             delete chat.OTR;
           }
           break;
         case OTR.CONST.STATUS_END_OTR:
           // The chat is no longer secure
-          $('section#chat[data-jid="' + chat.core.jid + '"]').data('otr', 'false');
+          $$('section#chat[data-jid="' + chat.core.jid + '"]').data('otr', 'false');
           delete chat.OTR;
           break;
       }
@@ -197,11 +197,11 @@ var Plus = {
   },
 
   showConsole: function() {
-    $('#console').show();
+    $$('#console').show();
   },
   
   hideConsole: function() {
-    $('#console').hide();
+    $$('#console').hide();
   },
   
   log: function(msg) {

@@ -435,8 +435,8 @@ App.connectors['coseme'] = function (account) {
     if (blob) {
       if (jid == this.account.core.fullJid) {
         Tools.picThumb(blob, 96, 96, function (url) {
-          $('section#main[data-jid="' + jid + '"] footer span.avatar img').attr('src', url);
-          $('section#me .avatar img').attr('src', url);
+          $$('section#main[data-jid="' + jid + '"] footer span.avatar img').attr('src', url);
+          $$('section#me .avatar img').attr('src', url);
           Store.save(url, function (index) {
             App.avatars[jid] = (new Avatar({id: picId, chunk: index})).data;
             App.smartupdate('avatars');
@@ -444,8 +444,8 @@ App.connectors['coseme'] = function (account) {
         });
       } else {
         Tools.picThumb(blob, 96, 96, function (url) {
-          $('ul[data-jid="' + account.core.fullJid + '"] [data-jid="' + jid + '"] span.avatar img').attr('src', url);
-          $('section#chat[data-jid="' + jid + '"] span.avatar img').attr('src', url);
+          $$('ul[data-jid="' + account.core.fullJid + '"] [data-jid="' + jid + '"] span.avatar img').attr('src', url);
+          $$('section#chat[data-jid="' + jid + '"] span.avatar img').attr('src', url);
           var cb = function (index) {
             App.avatars[jid] = (new Avatar({id: picId, chunk: index})).data;
             App.smartupdate('avatars');
@@ -467,14 +467,14 @@ App.connectors['coseme'] = function (account) {
   }
 
   this.events.onContactTyping = function (from) {
-    if (from == $('section#chat').data('jid')) {
-      $("section#chat #typing").show();
+    if (from == $$('section#chat').data('jid')) {
+      $$("section#chat #typing").show();
     }
   }
 
   this.events.onContactPaused = function (from) {
-    if (from == $('section#chat').data('jid')) {
-      $("section#chat #typing").hide();
+    if (from == $$('section#chat').data('jid')) {
+      $$("section#chat #typing").hide();
     }
   }
   
@@ -487,11 +487,11 @@ App.connectors['coseme'] = function (account) {
     var chat = account.chatGet(from);
     chat.core.lastAck = Tools.localize(Tools.stamp());
     chat.save();
-    var section = $('section#chat');
+    var section = $$('section#chat');
     if (section.hasClass('show') && section.data('jid') == from) {
       var li = section.find('ul li').last();
       section.find('span.lastACK').remove();
-      li.append($('<span/>').addClass('lastACK')[0]);
+      li.append($$('<span/>').addClass('lastACK')[0]);
     }
     Tools.log('DELIVERED', from, msgId);
     MI.call('delivered_ack', [from, msgId]);
@@ -559,8 +559,8 @@ App.connectors['coseme'] = function (account) {
   this.events.onGroupGotPicture = function (jid, picId, blob) {
     var account = this.account;
     Tools.picThumb(blob, 96, 96, function (url) {
-      $('ul[data-jid="' + account.core.fullJid + '"] li[data-jid="' + jid + '"] span.avatar img').attr('src', url);
-      $('section#chat[data-jid="' + jid + '"] span.avatar img').attr('src', url);
+      $$('ul[data-jid="' + account.core.fullJid + '"] li[data-jid="' + jid + '"] span.avatar img').attr('src', url);
+      $$('section#chat[data-jid="' + jid + '"] span.avatar img').attr('src', url);
       Store.save(url, function (index) {
         App.avatars[jid] = (new Avatar({id: picId, chunk: index})).data;
         App.smartupdate('avatars');
@@ -576,7 +576,7 @@ App.connectors['coseme'] = function (account) {
       if (!chat.core.participants || (JSON.stringify(chat.core.participants) != JSON.stringify(participants))) {
         chat.core.participants = participants;
         chat.save();
-        if ($('section#chat').hasClass('show') && $('section#chat').data('jid') == chat.core.jid) {
+        if ($$('section#chat').hasClass('show') && $$('section#chat').data('jid') == chat.core.jid) {
           chat.show();
         }
       }
@@ -590,7 +590,7 @@ App.connectors['coseme'] = function (account) {
       var chat = account.chats[ci];
       chat.core.participants = chat.core.participants.concat(participants);
       chat.save();
-      if ($('section#chat').hasClass('show') && $('section#chat').data('jid') == chat.core.jid) {
+      if ($$('section#chat').hasClass('show') && $$('section#chat').data('jid') == chat.core.jid) {
         chat.show();
       }
     }
@@ -716,7 +716,7 @@ App.connectors['coseme'] = function (account) {
         Tools.log('PRESENCE for', jid, 'WAS', contact.presence.show, 'NOW IS', parseInt(lastSeen) < 300 ? 'a' : 'away');
         contact.presence.show = parseInt(lastSeen) < 300 ? 'a' : 'away';
         account.presenceRender(contact);
-        var chatSection = $('section#chat[data-jid="' + jid + '"]');
+        var chatSection = $$('section#chat[data-jid="' + jid + '"]');
         if (chatSection.length) {
           var status = chatSection.find('header .status');
           status.html((parseInt(lastSeen) < 300 ? _('showa') : _('LastTime', {time: _('DateTimeFormat', {date: time[0], time: time[1]})})) +  ' - ' + status.html());
@@ -790,7 +790,7 @@ App.connectors['coseme'] = function (account) {
         delete Store.cache[hash];
       });
       Lungo.Notification.show('up-sign', _('Uploaded'), 1);
-      $('#main #footbox progress').val('0');
+      $$('#main #footbox progress').val('0');
     };
     var onError = function (error) {
       Lungo.Notification.error(
@@ -799,10 +799,10 @@ App.connectors['coseme'] = function (account) {
         'warning-sign', 5
       );
       Tools.log(error);
-      $('#main #footbox progress').val('0');
+      $$('#main #footbox progress').val('0');
     };
     var onProgress = function(value) {
-      $('#main #footbox progress').val(value.toString());
+      $$('#main #footbox progress').val(value.toString());
     };
     media.upload(toJID, blob, uploadUrl, onSuccess, onError, onProgress);
   }
@@ -879,29 +879,29 @@ App.connectors['coseme'] = function (account) {
 
 App.logForms['coseme'] = function (article, provider, data) {
   article
-    .append($('<h1/>').style('color', data.color).html(_('SettingUp', { provider: data.longName })))
-    .append($('<img/>').attr('src', 'img/providers/' + provider + '.svg'))
-  var sms = $('<div/>').addClass('sms')
-    .append($('<p/>').text(_('ProviderSMS', { provider: data.longName })))
-    .append($('<label/>').attr('for', 'countrySelect').text(_(data.terms['country'])));
-  var countrySelect = $('<select/>').attr('name', 'countrySelect');
+    .append($$('<h1/>').style('color', data.color).html(_('SettingUp', { provider: data.longName })))
+    .append($$('<img/>').attr('src', 'img/providers/' + provider + '.svg'))
+  var sms = $$('<div/>').addClass('sms')
+    .append($$('<p/>').text(_('ProviderSMS', { provider: data.longName })))
+    .append($$('<label/>').attr('for', 'countrySelect').text(_(data.terms['country'])));
+  var countrySelect = $$('<select/>').attr('name', 'countrySelect');
   var countries = Tools.countries();
-  countrySelect.append($('<option/>').attr('value', '').text('-- ' + _('YourCountry')));
+  countrySelect.append($$('<option/>').attr('value', '').text('-- ' + _('YourCountry')));
   for (var i in countries) {
     var country = countries[i];
-    countrySelect.append($('<option/>').attr('value', country.dial).text(country.name));
+    countrySelect.append($$('<option/>').attr('value', country.dial).text(country.name));
   }
   sms
     .append(countrySelect)
-    .append($('<label/>').attr('for', 'user').text(_(data.terms['user'])))
-    .append($('<input/>')
+    .append($$('<label/>').attr('for', 'user').text(_(data.terms['user'])))
+    .append($$('<input/>')
       .attr('type', 'number')
       .attr('name', 'country')
       .attr('disabled', 'true')
       .style('width', '3rem')
       .addClass('spaced')
     )
-    .append($('<input/>')
+    .append($$('<input/>')
       .attr('type', 'number')
       .attr('name', 'user')
       .style('width', 'calc(100% - 4.5rem)')
@@ -909,58 +909,58 @@ App.logForms['coseme'] = function (article, provider, data) {
   countrySelect.bind('change', function () {
     sms.find('input[name="country"]').val(this.value);
   });
-  var smsButtons = $('<div/>').addClass('buttongroup');
-  var smsReq = $('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('SMSRequest'));
-  var codeReady = $('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('codeReady'));
-  var back = $('<button/>').data('view-section', 'back').text(_('GoBack'));
+  var smsButtons = $$('<div/>').addClass('buttongroup');
+  var smsReq = $$('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('SMSRequest'));
+  var codeReady = $$('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('codeReady'));
+  var back = $$('<button/>').data('view-section', 'back').text(_('GoBack'));
   smsButtons.append(smsReq).append(codeReady).append(back);
   sms.append(smsButtons);
-  var code = $('<div/>').addClass('code hidden')
+  var code = $$('<div/>').addClass('code hidden')
     .append('<p>Enter the 6-digits code you have received by SMS.</p>')
-    .append($('<input/>')
+    .append($$('<input/>')
       .attr('type', 'number')
       .attr('name', 'rCode')
       .attr('placeholder', '123456')
     );
-  var codeButtons = $('<div/>').addClass('buttongroup');
-  var retry = $('<button/>')
+  var codeButtons = $$('<div/>').addClass('buttongroup');
+  var retry = $$('<button/>')
     .data('role','back')
     .bind('click', function () {
       code.addClass('hidden');
       sms.removeClass('hidden');
     })
     .text(_('Back'));
-  var validate = $('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('CodeValidate'));
+  var validate = $$('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('CodeValidate'));
   codeButtons.append(validate);
   codeButtons.append(retry);
   code.append(codeButtons);
-  var recode = $('<div/>').addClass('recode hidden')
-    .append($('<p/>').text(_('recodeSMS', { provider: data.longName })))
-    .append($('<label/>').attr('for', 'countrySelect').text(_(data.terms['country'])));
-  var countrySelect = $('<select/>').attr('name', 'countrySelect');
+  var recode = $$('<div/>').addClass('recode hidden')
+    .append($$('<p/>').text(_('recodeSMS', { provider: data.longName })))
+    .append($$('<label/>').attr('for', 'countrySelect').text(_(data.terms['country'])));
+  var countrySelect = $$('<select/>').attr('name', 'countrySelect');
   var countries = Tools.countries();
-  countrySelect.append($('<option/>').attr('value', '').text('-- ' + _('YourCountry')));
+  countrySelect.append($$('<option/>').attr('value', '').text('-- ' + _('YourCountry')));
   for (var i in countries) {
     var country = countries[i];
-    countrySelect.append($('<option/>').attr('value', country.dial).text(country.name));
+    countrySelect.append($$('<option/>').attr('value', country.dial).text(country.name));
   }
   recode
     .append(countrySelect)
-    .append($('<label/>').attr('for', 'user').text(_(data.terms['user'])))
-    .append($('<input/>')
+    .append($$('<label/>').attr('for', 'user').text(_(data.terms['user'])))
+    .append($$('<input/>')
       .attr('type', 'number')
       .attr('name', 'country')
       .attr('disabled', 'true')
       .style('width', '3rem')
       .addClass('spaced')
     )
-    .append($('<input/>')
+    .append($$('<input/>')
       .attr('type', 'number')
       .attr('name', 'user')
       .style('width', 'calc(100% - 4.5rem)')
     )
-    .append($('<label/>').attr('for', 'user').text(_('recodeLabel')))
-    .append($('<input/>')
+    .append($$('<label/>').attr('for', 'user').text(_('recodeLabel')))
+    .append($$('<input/>')
       .attr('type', 'number')
       .attr('name', 'rCode')
       .attr('placeholder', '123456')
@@ -968,14 +968,14 @@ App.logForms['coseme'] = function (article, provider, data) {
   countrySelect.bind('change', function () {
     recode.find('input[name="country"]').val(this.value);
   });
-  var recodeButtons = $('<div/>').addClass('buttongroup');
-  var valCode = $('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('recodeRequest'));
-  var sback = $('<button/>').text(_('GoBack'));
+  var recodeButtons = $$('<div/>').addClass('buttongroup');
+  var valCode = $$('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('recodeRequest'));
+  var sback = $$('<button/>').text(_('GoBack'));
   recodeButtons.append(valCode).append(sback);
   recode.append(recodeButtons);
-  var progress = $('<div/>').addClass('progress hidden')
+  var progress = $$('<div/>').addClass('progress hidden')
     .append('<span/>')
-    .append($('<progress/>').attr('value', '0'));
+    .append($$('<progress/>').attr('value', '0'));
   article
     .append(sms)
     .append(code)
@@ -994,12 +994,12 @@ App.logForms['coseme'] = function (article, provider, data) {
   smsReq.bind('click', function () {
     var article = this.parentNode.parentNode.parentNode;
     var provider = article.parentNode.id;
-    var user = $(article).find('[name="user"]').val();
-    var cc  = $(article).find('[name="country"]').val();
+    var user = $$(article).find('[name="user"]').val();
+    var cc  = $$(article).find('[name="country"]').val();
     if (cc && user) {
       Lungo.Notification.show('envelope', _('SMSsending'));
       var codeGet = function (deviceId) {
-        $(article).data('deviceId', deviceId);
+        $$(article).data('deviceId', deviceId);
         var onsent = function (data) {
           Tools.log(data);
           if (data.status == 'sent') {
@@ -1049,10 +1049,10 @@ App.logForms['coseme'] = function (article, provider, data) {
   validate.bind('click', function () {
     var article = this.parentNode.parentNode.parentNode;
     var provider = article.parentNode.id;
-    var user = $(article).find('[name="user"]').val();
-    var cc  = $(article).find('[name="country"]').val();
-    var rCode = $(article).find('[name="rCode"]').val().replace(/\D/g,'');
-    var deviceId = $(article).data('deviceId');
+    var user = $$(article).find('[name="user"]').val();
+    var cc  = $$(article).find('[name="country"]').val();
+    var rCode = $$(article).find('[name="rCode"]').val().replace(/\D/g,'');
+    var deviceId = $$(article).data('deviceId');
     if (cc && user && rCode && deviceId) {
       var onready = function (data) {
         Tools.log(data);
@@ -1080,10 +1080,10 @@ App.logForms['coseme'] = function (article, provider, data) {
   valCode.bind('click', function () {
     var article = this.parentNode.parentNode.parentNode;
     var provider = article.parentNode.id;
-    var user = $(article).find('[name="user"]').val();
-    var cc  = $(article).find('[name="country"]').val();
-    var rCode = $(article).find('[name="rCode"]').val().replace(/\D/g,'');
-    var deviceId = $(article).data('deviceId');
+    var user = $$(article).find('[name="user"]').val();
+    var cc  = $$(article).find('[name="country"]').val();
+    var rCode = $$(article).find('[name="rCode"]').val().replace(/\D/g,'');
+    var deviceId = $$(article).data('deviceId');
     if (cc && user && rCode && deviceId) {
       var onready = function (data) {
         Tools.log(data);

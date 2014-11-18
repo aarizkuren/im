@@ -104,7 +104,7 @@ App.connectors['XMPP'] = function (account) {
       connector.events.onPresence(ret, null, account.core.user);
       if (account.supports('vcard')) {
         connector.connection.vcard.get( function (data) {
-          connector.vcard = $(data).find('vCard').get(0);
+          connector.vcard = $$(data).find('vCard').get(0);
           callback();
         });
       } else {
@@ -179,7 +179,7 @@ App.connectors['XMPP'] = function (account) {
       }
       this.connection.send(msg.tree());
     }
-    $('section#main').attr('data-show', show);
+    $$('section#main').attr('data-show', show);
   }.bind(this);
   
   this.send = function (to, text, options) {
@@ -215,11 +215,11 @@ App.connectors['XMPP'] = function (account) {
     }
     if (jid) {
       this.connection.vcard.get(function(data) {
-        var vcard = $(data).find('vCard');
+        var vcard = $$(data).find('vCard');
         extract(vcard);
       }, jid);
     } else {
-      extract($(this.vcard));
+      extract($$(this.vcard));
     }
   }.bind(this);
   
@@ -238,8 +238,8 @@ App.connectors['XMPP'] = function (account) {
         this.account.core.avatarHash = b64_sha1(b64);
         this.account.save();
         this.presence.send();
-        $('section#main footer .avatar img').attr('src', url);
-        $('section#me .avatar img').attr('src', url);
+        $$('section#main footer .avatar img').attr('src', url);
+        $$('section#me .avatar img').attr('src', url);
       }.bind(this), vCardEl.tree());
     }.bind(this));
   }
@@ -271,7 +271,7 @@ App.connectors['XMPP'] = function (account) {
       if (typeof s == 'string') {
         disco.items(s, null, process, reject);
       } else {
-        s = $(s);
+        s = $$(s);
         var identities = s.find('identity');
         var items = s.find('item');
         if (identities.length) {
@@ -279,7 +279,7 @@ App.connectors['XMPP'] = function (account) {
           process(s.attr('from'));
         } else if (items.length) {
           items.each(function () {
-            var item = $(this);
+            var item = $$(this);
             var jid = item.attr('jid');
             if (jid.indexOf('@') > -1) {
               resolve(jid, item.attr('name'));
@@ -337,7 +337,7 @@ App.connectors['XMPP'] = function (account) {
             break;
           }
         }
-        if ($('section#chat').hasClass('show') && $('section#chat').data('jid') == chat.core.jid) {
+        if ($$('section#chat').hasClass('show') && $$('section#chat').data('jid') == chat.core.jid) {
           chat.show();
         }
         chat.save();
@@ -403,7 +403,7 @@ App.connectors['XMPP'] = function (account) {
   
   this.events.onMessage = function (stanza) {
     var account = this.account;
-    var tree = $(stanza);
+    var tree = $$(stanza);
     var muc = tree.attr('type') == 'groupchat';
     var from = tree.attr('from');
     var to = muc ? Strophe.getBareJidFromJid(tree.attr('from')) : Strophe.getBareJidFromJid(tree.attr('to'));
@@ -432,10 +432,10 @@ App.connectors['XMPP'] = function (account) {
       msg.receive();
     }
     if (account.supports('csn') && App.settings.csn) {
-      if(composing && Strophe.getBareJidFromJid(from) == $('section#chat').data('jid')){
-        $("section#chat #typing").show();
-      }else if(paused && Strophe.getBareJidFromJid(from) == $('section#chat').data('jid')){
-        $("section#chat #typing").hide();
+      if(composing && Strophe.getBareJidFromJid(from) == $$('section#chat').data('jid')){
+        $$("section#chat #typing").show();
+      }else if(paused && Strophe.getBareJidFromJid(from) == $$('section#chat').data('jid')){
+        $$("section#chat #typing").hide();
       }
     }
     if (request && !(composing) && !(paused)) {
@@ -461,18 +461,18 @@ App.connectors['XMPP'] = function (account) {
   }.bind(this);
   
   this.events.onMessageDelivered = function (stanza) {
-    var msg = $(stanza);
+    var msg = $$(stanza);
     var msgId = msg.attr('id');
     var from = Strophe.getBareJidFromJid(msg.attr('from'));
     var account = this.account;
     var chat = account.chatGet(from);
     chat.core.lastAck = Tools.localize(Tools.stamp());
     chat.save();
-    var section = $('section#chat');
+    var section = $$('section#chat');
     if (section.hasClass('show') && section.data('jid') == from) {
       var li = section.find('ul li').last();
       section.find('span.lastACK').remove();
-      li.append($('<span/>').addClass('lastACK')[0]);
+      li.append($$('<span/>').addClass('lastACK')[0]);
     }
     return true;
   }.bind(this);
@@ -516,7 +516,7 @@ App.connectors['XMPP'] = function (account) {
                   if (own) {
                   
                   } else {
-                    $('[data-jid="' + entry.jid + '"] span.avatar img').attr('src', val);
+                    $$('[data-jid="' + entry.jid + '"] span.avatar img').attr('src', val);
                   }
                 });
               });
@@ -546,13 +546,13 @@ App.connectors['XMPP'] = function (account) {
   }.bind(this);
   
   this.events.onSubRequest = function (stanza) {
-    this.connection.roster.authorize(Strophe.getBareJidFromJid($(stanza).attr('from')));
+    this.connection.roster.authorize(Strophe.getBareJidFromJid($$(stanza).attr('from')));
     return true;
   }.bind(this);
   
   this.events.onAttention = function (stanza) {
     if (App.settings.boltGet) {
-      var from = Strophe.getBareJidFromJid($(stanza).attr('from'));
+      var from = Strophe.getBareJidFromJid($$(stanza).attr('from'));
       var chat = this.account.chats[this.account.chatFind(from)];
       if (!chat) {
         var contact = Lungo.Core.findByProperty(this.account.core.roster, 'jid', from);
@@ -578,14 +578,14 @@ App.connectors['XMPP'] = function (account) {
   }.bind(this);
   
   this.events.onDisco = function (stanza) {
-    var stanza = $(stanza);
+    var stanza = $$(stanza);
     var key = stanza.find('query').attr('node');
     var value = {
       identities: stanza.find('identity').map(function (i, e, a) {
-        return {type: $(e).attr('type'), name: $(e).attr('name'), category: $(e).attr('category')};
+        return {type: $$(e).attr('type'), name: $$(e).attr('name'), category: $$(e).attr('category')};
       }),
       features: stanza.find('feature').map(function (i, e, a) {
-        return $(e).attr('var');
+        return $$(e).attr('var');
       })
     };
     App.caps[key] = value;
@@ -601,24 +601,24 @@ App.connectors['XMPP'] = function (account) {
 
 App.logForms['XMPP'] = function (article, provider, data) {
   article
-    .append($('<h1/>').style('color', data.color).html(_('SettingUp', { provider: data.longName })))
-    .append($('<img/>').attr('src', 'img/providers/' + provider + '.svg'))
-    .append($('<label/>').attr('for', 'user').text(_(data.terms['user'], { provider: data.altname })))
-    .append($('<input/>').attr('type', data.terms.userInputType).attr('x-inputmode', 'verbatim').attr('name', 'user').attr('placeholder', (data.terms.placeholder || _(data.terms['user'], { provider: data.altname }) )))
-    .append($('<label/>').attr('for', 'pass').text(_(data.terms['pass'])))
-    .append($('<input/>').attr('type', 'password').attr('name', 'pass').attr('placeholder', '******'));
+    .append($$('<h1/>').style('color', data.color).html(_('SettingUp', { provider: data.longName })))
+    .append($$('<img/>').attr('src', 'img/providers/' + provider + '.svg'))
+    .append($$('<label/>').attr('for', 'user').text(_(data.terms['user'], { provider: data.altname })))
+    .append($$('<input/>').attr('type', data.terms.userInputType).attr('x-inputmode', 'verbatim').attr('name', 'user').attr('placeholder', (data.terms.placeholder || _(data.terms['user'], { provider: data.altname }) )))
+    .append($$('<label/>').attr('for', 'pass').text(_(data.terms['pass'])))
+    .append($$('<input/>').attr('type', 'password').attr('name', 'pass').attr('placeholder', '******'));
   if (data.notice) {
-    article.append($('<small/>').html(_(provider + 'Notice')));
+    article.append($$('<small/>').html(_(provider + 'Notice')));
   }
-  var buttongroup = $('<div/>').addClass('buttongroup');
-  var submit = $('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('LogIn'));
-  var back = $('<button/>').data('view-section', 'back').text(_('GoBack'));
+  var buttongroup = $$('<div/>').addClass('buttongroup');
+  var submit = $$('<button/>').data('role', 'submit').style('backgroundColor', data.color).text(_('LogIn'));
+  var back = $$('<button/>').data('view-section', 'back').text(_('GoBack'));
   submit.bind('click', function () {
     var article = this.parentNode.parentNode;
     var provider = article.parentNode.id;
-    var user = Providers.autoComplete($(article).children('[name="user"]').val(), provider);
-    var pass = $(article).children('[name="pass"]').val();
-    var cc = $(article).children('[name="cc"]').val();
+    var user = Providers.autoComplete($$(article).children('[name="user"]').val(), provider);
+    var pass = $$(article).children('[name="pass"]').val();
+    var cc = $$(article).children('[name="cc"]').val();
     if (user && pass) {
       var account = new Account({
         user: user,

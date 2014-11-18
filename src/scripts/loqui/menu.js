@@ -5,7 +5,7 @@ var Menu = {
   // Tells what menu to open
   map: {
     providers: function () {
-      if (!$('section#providers ul li').length) {
+      if (!$$('section#providers ul li').length) {
         Providers.list();
       }
       Lungo.Router.section('providers');
@@ -31,18 +31,18 @@ var Menu = {
       Messenger.mucProfile();
     },
     mucClear: function (obj) {
-      var gid = $(obj).closest('section').data('jid');
+      var gid = $$(obj).closest('section').data('jid');
       Messenger.mucClear(gid);
     },
     mucExit: function (obj) {
-      var gid = $(obj).closest('section').data('jid');
+      var gid = $$(obj).closest('section').data('jid');
       Messenger.mucExit(gid);
     },
     mucCreateForm: function (obj) {
       Lungo.Router.section('back');
       Lungo.Router.section('mucCreateForm');
       var account = Messenger.account();
-      var form = $('section#mucCreateForm article.form');
+      var form = $$('section#mucCreateForm article.form');
       var server = Strophe.getDomainFromJid(account.core.fullJid);
       var inList = form.find('option[value$="' + server + '"]');
       if (inList.length < 1) {
@@ -58,7 +58,7 @@ var Menu = {
     },
     mucCreate: function (obj) {
       var account = Messenger.account();
-      var form = $('section#mucCreateForm article.form');
+      var form = $$('section#mucCreateForm article.form');
       var domain = form.find('[name=custom]').val() || form.find('[name=server]').val();
       var title = form.find('[name=title]').val().trim();
       var members = form.find('ul.listBox').children().map(function (i,e,a) {return e.dataset.jid});
@@ -70,7 +70,7 @@ var Menu = {
       Lungo.Router.section('back');
       Lungo.Router.section('mucSearchForm');
       var account = Messenger.account();
-      var form = $('section#mucSearchForm article.form');
+      var form = $$('section#mucSearchForm article.form');
       var server = Strophe.getDomainFromJid(account.core.fullJid);
       var inList = form.find('option[value$="' + server + '"]');
       if (inList.length < 1) {
@@ -81,19 +81,19 @@ var Menu = {
     },
     mucSearch: function (obj) {
       var account = Messenger.account();
-      var form = $('section#mucSearchForm article.form');
+      var form = $$('section#mucSearchForm article.form');
       var server = form.find('[name=custom]').val() || form.find('[name=server]').val();
       var ul = form.find('output').children('ul').first().empty();
       var mucJoin = function (e) {
-        var jid = $(this).parent().data('jid');
-        var title = $(this).siblings('span').text();
+        var jid = $$(this).parent().data('jid');
+        var title = $$(this).siblings('span').text();
         account.connector.muc.join(jid, title);
       }
       if (server) {
         account.connector.muc.explore(server,
           function (jid, name) {
             Tools.log('GOT', jid, name);
-            var html = $('<li/>').data('jid', jid).append($('<span/>').text(name)).append($('<a/>').text(_('Join')).on('click', mucJoin));
+            var html = $$('<li/>').data('jid', jid).append($$('<span/>').text(name)).append($$('<a/>').text(_('Join')).on('click', mucJoin));
             ul.append(html);
             Lungo.Notification.hide();
           },
@@ -108,14 +108,14 @@ var Menu = {
       var cb;
       var account = Messenger.account();
       if (typeof obj == 'object') {
-        var obj = $(obj);
+        var obj = $$(obj);
         var listBox = obj.parent();
         cb = function (jid, name) {
           var ex = listBox.find('li[data-jid="' + jid + '"]');
           if (ex.length > 0) {
             ex.remove();
           } else {
-            listBox.prepend($('<li/>').data('jid', jid).text(name));
+            listBox.prepend($$('<li/>').data('jid', jid).text(name));
           }
         }
       } else {
@@ -132,9 +132,9 @@ var Menu = {
       var cb;
       var account = Messenger.account();
       if (typeof obj == 'object') {
-        var obj = $(obj);
+        var obj = $$(obj);
         cb = function (jid, name) {
-          account.connector.muc.invite($('section#muc').data('jid'), [jid], $('section#muc').find('span.name').text());
+          account.connector.muc.invite($$('section#muc').data('jid'), [jid], $$('section#muc').find('span.name').text());
           Lungo.Router.section('back');
           Lungo.Router.section('back');
           Lungo.Notification.success(_('MucInvited', {name: name}), null, 'check', 3);
@@ -153,7 +153,7 @@ var Menu = {
       if (account.supports('rosterMgmt')) {
         var selfDomain = Strophe.getDomainFromJid(account.core.user);
         var placeholder = _('User').toLowerCase() + '@' + selfDomain;
-        $('section#contactAdd').find('[name=address]').attr('placeholder', placeholder);
+        $$('section#contactAdd').find('[name=address]').attr('placeholder', placeholder);
         Lungo.Router.section('main');
         Lungo.Router.section('contactAdd');
       } else {
@@ -161,7 +161,7 @@ var Menu = {
       }
     },
     contactRemove: function(obj) {
-      var jid = $(obj).closest('section').data('jid');
+      var jid = $$(obj).closest('section').data('jid');
       Messenger.contactRemove(jid);
     },
     chatAdd: function (obj) {
@@ -175,19 +175,19 @@ var Menu = {
       Lungo.Router.article('activity', 'search');
     },
     chatRemove: function (obj) {
-      var jid = $(obj).closest('section').data('jid');
+      var jid = $$(obj).closest('section').data('jid');
       Messenger.chatRemove(jid);
     },
     chatInfo: function (obj) {
-      var muc = ($(obj).closest('section').data('muc') == 'true') ? true : false;
+      var muc = ($$(obj).closest('section').data('muc') == 'true') ? true : false;
       Menu.show(muc ? 'muc' : 'contact');
     },
     accountRemove: function(obj) {
-      var jid = $(obj).closest('section').data('jid');
+      var jid = $$(obj).closest('section').data('jid');
       Messenger.accountRemove(jid);
     },
     plus: function () {
-      var menu = $('section#chat nav#plus');
+      var menu = $$('section#chat nav#plus');
       if (menu.hasClass('show')) {
         menu.removeClass('show');
       } else {
@@ -196,19 +196,19 @@ var Menu = {
     },
     emoji: function () {
       var account = Messenger.account();
-      $('section#chat nav#plus').removeClass('show');
-      var ul = $('section#chat article#emoji ul');
+      $$('section#chat nav#plus').removeClass('show');
+      var ul = $$('section#chat article#emoji ul');
       var emojiList = App.emoji[Providers.data[account.core.provider].emoji].map;
       if (ul.children('li').length != emojiList.length) {
         Lungo.Notification.show('heart', _('Loading...'));
         ul.empty();
         for (var i in emojiList) {
           var emoji = emojiList[i];
-          var li = $('<li/>')
+          var li = $$('<li/>')
             .on('tap', function () {
-              Plus.emoji($(this).children('img').data('emoji'));
+              Plus.emoji($$(this).children('img').data('emoji'));
             });
-          var img = $('<img/>');
+          var img = $$('<img/>');
           account.connector.emojiRender(img, emoji);
           li.append(img);
           ul.append(li);
@@ -233,12 +233,12 @@ var Menu = {
       Plus.bolt();
     },
     call: function () {
-      $('section#chat nav#plus').removeClass('show');
+      $$('section#chat nav#plus').removeClass('show');
       Lungo.Router.article('chat', 'call');
       Plus.rtc({audio: true, video: false});
     },
     videocall: function () {
-      $('section#chat nav#plus').removeClass('show');
+      $$('section#chat nav#plus').removeClass('show');
       Lungo.Router.article('chat', 'videocall');
       Plus.rtc({audio: true, video: true});
     },
@@ -247,7 +247,7 @@ var Menu = {
       account.OTRMenu();
     },
     switchOTR: function(obj) {
-      var jid = $(obj).closest('section').data('jid');
+      var jid = $$(obj).closest('section').data('jid');
       Plus.switchOTR(jid);
     },
     purchase: function () {

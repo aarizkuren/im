@@ -21,7 +21,7 @@ var Chat = function (core, account) {
   
   // Render last chunk of messages
   this.lastChunkRender = function () {
-    var ul = $('section#chat ul#messages');
+    var ul = $$('section#chat ul#messages');
     ul.empty();
     var index = this.core.chunks.length - 1;
     if (index >= 0) {
@@ -32,13 +32,13 @@ var Chat = function (core, account) {
   // Render a chunk of messages
   this.chunkRender = function (index) {
     var chat = this;
-    var ul = $('section#chat ul#messages');
+    var ul = $$('section#chat ul#messages');
     if (index >= 0 && ul.children('li[data-index="' + index + '"]').length < 1) {
       var stIndex = this.core.chunks[index];
       var height = ul[0].scrollHeight - ul[0].scrollTop;
       Store.recover(stIndex, function (chunk) {
         if (chunk) {
-          var li = $('<li/>');
+          var li = $$('<li/>');
           var frag = document.createDocumentFragment();
           li.addClass('chunk');
           li.data('chunk', stIndex);
@@ -56,16 +56,16 @@ var Chat = function (core, account) {
             // Append the message
             // New messages mark
             if (chat.unread && prevRead && time > lastRead) {
-              frag.appendChild($('<span/>').addClass('lastRead').text(_('NewMessages', {number: chat.unread}))[0]);
+              frag.appendChild($$('<span/>').addClass('lastRead').text(_('NewMessages', {number: chat.unread}))[0]);
             }
             // Show time stamp if differs in more than 5m
             if (timeDiff > 300000) {
               var conv = Tools.convenientDate(msg.core.stamp);
-              frag.appendChild($('<time/>').attr('datetime', msg.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
+              frag.appendChild($$('<time/>').attr('datetime', msg.core.stamp).text(_('DateTimeFormat', {date: conv[0], time: conv[1]}))[0]);
             }
             frag.appendChild(msg.preRender(i, avatarize));
             if (chat.account.supports('receipts') && !chat.core.muc && !ack && prevAck) {
-              frag.appendChild($('<span/>').addClass('lastACK')[0]);
+              frag.appendChild($$('<span/>').addClass('lastACK')[0]);
             }
             prevType = type;
             prevTime = time;
@@ -73,7 +73,7 @@ var Chat = function (core, account) {
             prevRead = time <= lastRead;
           }
           if (chat.account.supports('receipts') && !chat.core.muc && (index == (chat.core.chunks.length - 1)) && chat.core.lastAck && prevAck) {
-            frag.appendChild($('<span/>').addClass('lastACK')[0]);
+            frag.appendChild($$('<span/>').addClass('lastACK')[0]);
           }
           li[0].appendChild(frag);
           var more = ul.children('.more');
@@ -83,7 +83,7 @@ var Chat = function (core, account) {
             ul.prepend(li);
           }
           if (index > 0) {
-            ul.prepend($('<button/>').addClass('more').html(_('MoreMessages', {number: App.defaults.Chat.chunkSize, total: index * App.defaults.Chat.chunkSize})).on('click', function (e) {
+            ul.prepend($$('<button/>').addClass('more').html(_('MoreMessages', {number: App.defaults.Chat.chunkSize, total: index * App.defaults.Chat.chunkSize})).on('click', function (e) {
               chat.chunkRender(index - 1);
             }));
           }
@@ -178,24 +178,24 @@ var Chat = function (core, account) {
         chat.notification = App.notify({ subject: subject, text: text, pic: 'img/foovatar.png', callback: callback }, 'received');
       }
       chat.core.lastAck = last.stamp;
-      var section = $('section#chat');
+      var section = $$('section#chat');
       if (chat.account.supports('receipts') && section.hasClass('show') && section.data('jid') == last.from) {
         var li = section.find('ul li').last();
         section.find('span.lastACK').remove();
-        li.append($('<span/>').addClass('lastACK')[0]);
+        li.append($$('<span/>').addClass('lastACK')[0]);
       }
     }
-    $('#chat #messages span.lastRead').remove();
+    $$('#chat #messages span.lastRead').remove();
     this.save(true);
   }.bind(this);
   
   // Create a chat window for this contact
   this.show = function () {
-    var section = $('section#chat');
+    var section = $$('section#chat');
     var header = section.children('header');
     var contact = Lungo.Core.findByProperty(this.account.core.roster, 'jid', this.core.jid);
     section.data('jid', this.core.jid);
-    section.data('features', $('section#main').data('features'));
+    section.data('features', $$('section#main').data('features'));
     section.data('caps', contact && contact.presence.caps in App.caps ? App.caps[contact.presence.caps].features.join(' ') : 'false');
     section.data('muc', this.core.muc || false);
     section.data('mine', this.core.muc && this.core.info && this.core.info.owner == this.account.core.fullJid);
@@ -209,7 +209,7 @@ var Chat = function (core, account) {
       header.children('.avatar').children('img').attr('src', url);
     }
     if (App.avatars[this.core.jid]) {
-      var existant = $('ul li[data-jid="' + this.core.jid + '"] .avatar img');
+      var existant = $$('ul li[data-jid="' + this.core.jid + '"] .avatar img');
       if (existant.length) {
         avatarize(existant.attr('src'));
       } else {

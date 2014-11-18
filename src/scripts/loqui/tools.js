@@ -103,7 +103,7 @@ var Tools = {
       if (event.lengthComputable) {
         var percentComplete = (event.loaded / event.total) * 100;
         percentComplete = percentComplete.toFixed(0);
-        $('progress').val(percentComplete.toString());
+        $$('progress').val(percentComplete.toString());
       }
     };
     var type = Tools.getFileType(url.split('.').pop());
@@ -114,7 +114,7 @@ var Tools = {
     xhr.open('GET', url);
     xhr.responseType = 'blob';
     xhr.onload = function (e) {
-      $('progress').val('0');
+      $$('progress').val('0');
       cb(xhr.response);
     }
     xhr.onprogress = progress;
@@ -257,7 +257,7 @@ var Tools = {
   },
 
   modifyLungoNotification: function ( newText ) {
-    var notificationDiv = $('div.notification');
+    var notificationDiv = $$('div.notification');
     notificationDiv.children('div').children('strong').html(newText);
   },
 

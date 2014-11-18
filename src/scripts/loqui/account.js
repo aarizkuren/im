@@ -39,11 +39,11 @@ var Account = function (core) {
             App.accounts.push(this);
             App.smartpush('accountsCores', this.core);
             Lungo.Notification.hide();
-            $('section.setup#' + this.core.provider + ' input').val('');
-            $('section#success span#imported').text(_('Imported', {number: (this.core.roster && this.core.roster.length) ? this.core.roster.length : 0}));
+            $$('section.setup#' + this.core.provider + ' input').val('');
+            $$('section#success span#imported').text(_('Imported', {number: (this.core.roster && this.core.roster.length) ? this.core.roster.length : 0}));
             this.connector.avatar(function (avatar) {
               avatar.url.then(function (src) {
-                $('section#success img#avatar').attr('src', src);              
+                $$('section#success img#avatar').attr('src', src);
               });
             });
             Lungo.Router.section('success');
@@ -73,7 +73,7 @@ var Account = function (core) {
       if (navigator.onLine){
         this.connector.connect({
           connecting: function () {
-            $('aside#accounts li[data-jid="' + (this.core.fullJid || this.core.user) + '"]').data('value', 'loading');
+            $$('aside#accounts li[data-jid="' + (this.core.fullJid || this.core.user) + '"]').data('value', 'loading');
           }.bind(this),
           connected: function () {
             var cb = function (rcb) {
@@ -89,7 +89,7 @@ var Account = function (core) {
             this.sync(cb);
           }.bind(this),
           authenticating: function () {
-            $('aside#accounts li[data-jid="' + (this.core.fullJid || this.core.user) + '"]').data('value', 'loading');
+            $$('aside#accounts li[data-jid="' + (this.core.fullJid || this.core.user) + '"]').data('value', 'loading');
           }.bind(this),
           authfail: function () {
             var failStamps = this.connector.failStamps || {};
@@ -119,27 +119,27 @@ var Account = function (core) {
   // Bring account to foreground
   this.show = function () {
     var account = this;
-    $('section#main').data('jid', this.core.fullJid);
-    var vCard = $(this.connector.vcard);
+    $$('section#main').data('jid', this.core.fullJid);
+    var vCard = $$(this.connector.vcard);
     var address = ( vCard.length && vCard.find('FN').length ) ? vCard.find('FN').text() : this.core.user;
-    $('section#main header img').attr('src', 'img/providers/' + this.core.provider + '.svg');
-    $('section#main header .provider').text(this.connector.provider.longName);
-    $('section#main header .jid').text(address);
-    $('section#main article ul[data-jid="' + this.core.fullJid + '"]').show().siblings('ul').hide();
+    $$('section#main header img').attr('src', 'img/providers/' + this.core.provider + '.svg');
+    $$('section#main header .provider').text(this.connector.provider.longName);
+    $$('section#main header .jid').text(address);
+    $$('section#main article ul[data-jid="' + this.core.fullJid + '"]').show().siblings('ul').hide();
     var index = Accounts.find(this.core.fullJid);
-    $('aside#accounts [data-jid="' + this.core.fullJid  + '"]').addClass('active').siblings('li').removeClass('active');
+    $$('aside#accounts [data-jid="' + this.core.fullJid  + '"]').addClass('active').siblings('li').removeClass('active');
     var features = Providers.data[this.core.provider].features;
-    var meSection = $('section#me');
-    var mainSection = $('section#main');
+    var meSection = $$('section#me');
+    var mainSection = $$('section#main');
     meSection.data('features', features.join(' '));
     mainSection.data('features', features.join(' '));
     meSection.find('#status input').val(this.connector.presence.status);
     meSection.find('#card .name').text(address == this.core.user ? '' : address);
     meSection.find('#card .user').text(this.core.user);
-    meSection.find('#card .provider').empty().append($('<img/>').attr('src', 'img/providers/squares/' + this.core.provider + '.svg'));
+    meSection.find('#card .provider').empty().append($$('<img/>').attr('src', 'img/providers/squares/' + this.core.provider + '.svg'));
     var show = function (a) {
       a.url.then(function (val) {
-        $('section#me .avatar img').attr('src', val);
+        $$('section#me .avatar img').attr('src', val);
       });
     }
     if (account.core.fullJid in App.avatars) {
@@ -151,8 +151,8 @@ var Account = function (core) {
     }
     Accounts.unread(account.unread);
     Store.recover(account.core.background, function (url) {
-      $('section#chat ul#messages').style('background', 'url('+url+') no-repeat center center fixed');
-      $('section.profile div#card').style('background', 'url('+url+') no-repeat center center fixed'); 
+      $$('section#chat ul#messages').style('background', 'url('+url+') no-repeat center center fixed');
+      $$('section.profile div#card').style('background', 'url('+url+') no-repeat center center fixed');
     }.bind(this)); 
   }
   
@@ -166,13 +166,13 @@ var Account = function (core) {
   
   // Changes some styles based on presence and connection status
   this.accountRender = function () {
-    var li = $('aside#accounts li[data-jid="' + (this.core.fullJid || this.core.user) + '"]');
+    var li = $$('aside#accounts li[data-jid="' + (this.core.fullJid || this.core.user) + '"]');
     li.data('value', this.connector.isConnected() ? true : (this.core.enabled ? 'loading' : false));
     li.data('show', this.connector.presence.show);
   }
   
   this.singleRender = function (chat, up) {
-    var ul = $('section#main article#chats ul[data-jid="' + this.core.fullJid + '"]');
+    var ul = $$('section#main article#chats ul[data-jid="' + this.core.fullJid + '"]');
     var li = ul.children('li[data-jid="' + chat.core.jid + '"]');
     if (li.length) {
       if (up) {
@@ -199,8 +199,8 @@ var Account = function (core) {
   // List all chats for this account
   this.chatsRender = function (f, click, hold) {
     var account = this;
-    var oldUl = $('section#main article#chats ul[data-jid="' + this.core.fullJid + '"]');
-    var ul = $("<ul />");
+    var oldUl = $$('section#main article#chats ul[data-jid="' + this.core.fullJid + '"]');
+    var ul = $$("<ul />");
     var media = _('AttachedFile');
     ul.data('jid', account.core.fullJid);
     if (!f) {
@@ -213,13 +213,13 @@ var Account = function (core) {
         var title = App.emoji[Providers.data[this.core.provider].emoji].fy(chat.title);
         var lastMsg = chat.last ? (chat.last.text ? (App.emoji[Providers.data[account.core.provider].emoji].fy(chat.last.text)) : (chat.last.media ? media : '')) : ' ';
         var lastStamp = chat.last.stamp ? Tools.convenientDate(chat.last.stamp).join('<br />') : '';
-        var li = $('<li/>').data('jid', chat.jid);
-        li.append($('<span/>').addClass('avatar').append('<img/>'));
-        li.append($('<span/>').addClass('name').html(title));
-        li.append($('<span/>').addClass('lastMessage').html(lastMsg));
-        li.append($('<span/>').addClass('lastStamp').html(lastStamp));
-        li.append($('<span/>').addClass('show').addClass('backchange'));
-        li.append($('<span/>').addClass('unread').text(chat.unread));
+        var li = $$('<li/>').data('jid', chat.jid);
+        li.append($$('<span/>').addClass('avatar').append('<img/>'));
+        li.append($$('<span/>').addClass('name').html(title));
+        li.append($$('<span/>').addClass('lastMessage').html(lastMsg));
+        li.append($$('<span/>').addClass('lastStamp').html(lastStamp));
+        li.append($$('<span/>').addClass('show').addClass('backchange'));
+        li.append($$('<span/>').addClass('unread').text(chat.unread));
         li.data('unread', chat.unread ? 1 : 0);
         if (!chat.muc && account.supports('muc') && chat.jid.substring(1).match(/\-/)) {
           account.chats[i].core.muc = true;
@@ -233,7 +233,7 @@ var Account = function (core) {
           } else {
             var chat = new Chat({
               jid: this.dataset.jid,
-              title: $(this).children('.name').text(),
+              title: $$(this).children('.name').text(),
               chunks: []
             }, account);
           }
@@ -250,9 +250,9 @@ var Account = function (core) {
         ul.prepend(li);
       }
     } else {
-      var span = $('<span/>').addClass('noChats')
-        .append($('<strong/>').text(_('NoChats')))
-        .append($('<p/>').text(_('NoChatsExplanation')));
+      var span = $$('<span/>').addClass('noChats')
+        .append($$('<strong/>').text(_('NoChats')))
+        .append($$('<p/>').text(_('NoChatsExplanation')));
       span.on('click', function () {
         var account = Messenger.account();
         Activity('chat', account, null, {
@@ -263,7 +263,7 @@ var Account = function (core) {
       ul.prepend(span);
     }
     if (f) {
-      f.appendChild($('<article/>').attr('id', 'chats').addClass('scroll').append(ul)[0]);
+      f.appendChild($$('<article/>').attr('id', 'chats').addClass('scroll').append(ul)[0]);
     } else {
       oldUl.replaceWith(ul);    
     }
@@ -277,13 +277,13 @@ var Account = function (core) {
   // List all contacts for this account
   this.contactsRender = function (f, click, selected) {
     var account = this;
-    var article = $('<article/>').attr('id', 'contacts');
-    var header = $('<header/>').addClass('beige')
-      .append($('<button/>').addClass('new').text(_('ContactAdd')).on('click', function (event) {
+    var article = $$('<article/>').attr('id', 'contacts');
+    var header = $$('<header/>').addClass('beige')
+      .append($$('<button/>').addClass('new').text(_('ContactAdd')).on('click', function (event) {
         Menu.show('contactAdd');
       }));
     if (account.supports('localContacts')) {
-      header.append($('<button/>').addClass('sync').text(_('ContactsSync')).on('click', function (event) {
+      header.append($$('<button/>').addClass('sync').text(_('ContactsSync')).on('click', function (event) {
         delete account.core.roster;
         account.connector.contacts.sync(function (rcb) {
           account.save();
@@ -291,7 +291,7 @@ var Account = function (core) {
         });
       }));
     }
-    var ul = $('<ul/>').addClass('list').addClass('scroll');
+    var ul = $$('<ul/>').addClass('list').addClass('scroll');
     var frag = f;
     var account = this;
     this.contacts = {};
@@ -327,21 +327,21 @@ var Account = function (core) {
   // List all group chats for this account
   this.groupsRender = function (f, click) {
     var account = this;
-    var article = $('<article/>').attr('id', 'groups');
-    var header = $('<header/>').addClass('beige');
+    var article = $$('<article/>').attr('id', 'groups');
+    var header = $$('<header/>').addClass('beige');
     if (account.supports('mucCreate')) {
-      header.append($('<button/>').addClass('new').text(_('GroupNew'))
+      header.append($$('<button/>').addClass('new').text(_('GroupNew'))
       .on('click', function (event) {
         Menu.show('mucCreateForm', account);
       }))
     }
     if (account.supports('mucJoin')) {
-      header.append($('<button/>').addClass('join').text(_('GroupJoin'))
+      header.append($$('<button/>').addClass('join').text(_('GroupJoin'))
       .on('click', function (event) {
         Menu.show('mucSearchForm', account);
       }));
     }
-    var ul = $('<ul/>').addClass('list').addClass('scroll');
+    var ul = $$('<ul/>').addClass('list').addClass('scroll');
     var frag = f;
     var account = this;
     this.core.chats.forEach(function (chat, i, chats) {
@@ -373,10 +373,10 @@ var Account = function (core) {
     if (this.connector.isConnected() && this.supports('presence')) {
       var contactPresenceRender = function (contact) {
         if (this.supports('show')) {
-          var li = $('section#main article ul li[data-jid="'+contact.jid+'"]');
+          var li = $$('section#main article ul li[data-jid="'+contact.jid+'"]');
           li.data('show', contact.presence.show || 'na');
           li.find('.status').html(App.emoji[Providers.data[this.core.provider].emoji].fy(contact.presence.status) || _('show' + (contact.presence.show || 'na')));
-          var section = $('section#chat');
+          var section = $$('section#chat');
           if (section.data('jid') == contact.jid) {
             section.data('show', contact.presence.show || 'na');
             section.find('header .status').html(App.emoji[Providers.data[this.core.provider].emoji].fy(contact.presence.status) || _('show' + (contact.presence.show || 'na')));
@@ -401,24 +401,24 @@ var Account = function (core) {
   this.avatarsRender = function () {
     var account = this;
     var avatars = App.avatars;
-    $('span.avatar img:not([src])').each(function (i, el) {
-      var jid = Strophe.getBareJidFromJid($(el).closest('[data-jid]').data('jid')) || account.core.fullJid;
+    $$('span.avatar img:not([src])').each(function (i, el) {
+      var jid = Strophe.getBareJidFromJid($$(el).closest('[data-jid]').data('jid')) || account.core.fullJid;
       var me = jid == account.core.fullJid;
       if (avatars[jid]) {
         (new Avatar(avatars[jid])).url.then(function (val) {
-          $(el).attr('src', val);
+          $$(el).attr('src', val);
           if (me) {
-            $('section#main footer .avatar img').attr('src', val);
-            $('section#me .avatar img').attr('src', val);
+            $$('section#main footer .avatar img').attr('src', val);
+            $$('section#me .avatar img').attr('src', val);
           }
         });
       } else if (account.connector.isConnected() && account.supports('easyAvatars')) {
         account.connector.avatar(function (a) {
           a.url.then(function (val) {
-            $(el).attr('src', val);
+            $$(el).attr('src', val);
             if (me) {
-              $('section#main footer .avatar img').attr('src', val);
-              $('section#me .avatar img').attr('src', val);
+              $$('section#main footer .avatar img').attr('src', val);
+              $$('section#me .avatar img').attr('src', val);
             }
             avatars[jid] = a.data;
           });
@@ -433,9 +433,9 @@ var Account = function (core) {
     if(!this.contacts)
       return false;
     var account = this;
-    var article = $('<article/>').attr('id', 'search');
-    var header = $('<header/>').addClass('beige');
-    var input = $('<input/>').attr('id', 'searchInput')
+    var article = $$('<article/>').attr('id', 'search');
+    var header = $$('<header/>').addClass('beige');
+    var input = $$('<input/>').attr('id', 'searchInput')
                 .on('input', function (event) {
                   var ele = event.target;
                   if(ele.value)
@@ -444,7 +444,7 @@ var Account = function (core) {
                     ele.nextSibling.className = 'hidden';
                   account.search(article, this.value, click);
                 });
-    var reset = $('<span/>').attr('id', 'reset')
+    var reset = $$('<span/>').attr('id', 'reset')
                 .addClass('hidden')
                 .on('click', function (event) {
                   this.previousSibling.value = '';
@@ -452,7 +452,7 @@ var Account = function (core) {
                   account.search(article, '', click);
                 });
     header.append(input).append(reset);
-    article.append(header).append($('<h1/>').text('Type some characters to start searching'));
+    article.append(header).append($$('<h1/>').text('Type some characters to start searching'));
     var frag = f;
     frag.appendChild(article[0]);
   }
@@ -463,7 +463,7 @@ var Account = function (core) {
     if(article[0].lastChild.nodeName === 'UL' || article[0].lastChild.nodeName === 'H1')
       article[0].lastChild.remove();
     if(!text) {
-      article.append($('<h1/>').text('Type some characters to start searching'));
+      article.append($$('<h1/>').text('Type some characters to start searching'));
       return false;
     }
     text = text.toLowerCase();
@@ -479,7 +479,7 @@ var Account = function (core) {
       if(str.hasOwnProperty(match))
         matches.push(match);
     }
-    var ul = $('<ul/>').addClass('list').addClass('scroll');
+    var ul = $$('<ul/>').addClass('list').addClass('scroll');
     for(var _i = 0, _len = matches.length; _i < _len; _i++) {
       var jids = account.contacts[matches[_i]].split(' ');
       for(var _j = 0, _l = jids.length; _j < _l; _j++) {
@@ -501,7 +501,7 @@ var Account = function (core) {
     var account = this;
     function OTRSetup() {
       Lungo.Router.article('otrMenu', 'otrSetup');
-      $('button#setupOtr').on('click', function(e) {
+      $$('button#setupOtr').on('click', function(e) {
         Lungo.Notification.success(_('OTRKeygen'), _('OTRWait'), 'key', 5);
         Lungo.Router.section('back');
         Lungo.Router.section('main');
@@ -522,12 +522,12 @@ var Account = function (core) {
     function OTRSettings() {
       Lungo.Router.article('otrMenu', 'otrSettings');
       var fingerprint = account.OTR.key.fingerprint();
-      $('span#otrKeyFingerprint').html($('<small/>').html(Tools.explode(fingerprint, 8)));
-      $('span#otrKeyFingerprint').append($('<img/>').attr('src', Tools.fingerprintToImage(fingerprint)));
+      $$('span#otrKeyFingerprint').html($$('<small/>').html(Tools.explode(fingerprint, 8)));
+      $$('span#otrKeyFingerprint').append($$('<img/>').attr('src', Tools.fingerprintToImage(fingerprint)));
       if (account.core.OTR.logging) {
-        $('input#logOtrChats').attr('checked', account.OTR.logging);
+        $$('input#logOtrChats').attr('checked', account.OTR.logging);
       }
-      $('input#logOtrChats').on('change', function () {
+      $$('input#logOtrChats').on('change', function () {
         account.core.OTR.logging = this.checked;
         account.save();
       });
@@ -638,7 +638,7 @@ var Accounts = {
   aside: function () {
     var accountSwitch = function (e) {
       e.stopPropagation();
-      var sw = $(this);
+      var sw = $$(this);
       var li = sw.closest('li');
       var account = App.accounts[Accounts.find(li.data('jid'))];
       if (li.data('value') == 'true') {
@@ -652,16 +652,16 @@ var Accounts = {
       }
       account.save();
     }
-    var ul = $('aside#accounts ul');
+    var ul = $$('aside#accounts ul');
     ul.empty();
     for (var i in App.accounts) {
       var account = App.accounts[i];
-      var li = $('<li/>').data('jid', account.core.fullJid || account.core.user).append(
-        $('<span/>').addClass('provider').text(account.connector.provider.longName)
+      var li = $$('<li/>').data('jid', account.core.fullJid || account.core.user).append(
+        $$('<span/>').addClass('provider').text(account.connector.provider.longName)
       ).append(
-        $('<span/>').addClass('jid').text(account.core.user)
+        $$('<span/>').addClass('jid').text(account.core.user)
       ).append(
-        $('<div class="switch"><div class="ball"></div><img src="img/tick.svg" class="tick" /></div>').bind('click', accountSwitch)
+        $$('<div class="switch"><div class="ball"></div><img src="img/tick.svg" class="tick" /></div>').bind('click', accountSwitch)
       ).data('value', 'loading');
       li.on('click', function () {
         var index = Accounts.find(this.dataset.jid);
@@ -670,19 +670,19 @@ var Accounts = {
           Lungo.Aside.hide();
         }
       });
-      var img = $('<img/>').addClass('provIcon').attr('src', 'img/providers/squares/' + account.core.provider + '.svg');
+      var img = $$('<img/>').addClass('provIcon').attr('src', 'img/providers/squares/' + account.core.provider + '.svg');
       ul.append(li.append(img));
     }
   },
   
   // Create main sections 
   main: function () {
-    var chats = $('section#main article#chats').empty();
-    var contacts = $('section#main article#contacts').empty();
+    var chats = $$('section#main article#chats').empty();
+    var contacts = $$('section#main article#contacts').empty();
     for (var i in App.accounts) {
       var account = App.accounts[i];
-      chats.append($("<ul/>").data('jid', account.core.fullJid));
-      contacts.append($("<ul/>").data('jid', account.core.fullJid));
+      chats.append($$("<ul/>").data('jid', account.core.fullJid));
+      contacts.append($$("<ul/>").data('jid', account.core.fullJid));
       account.allRender();
     }
   },

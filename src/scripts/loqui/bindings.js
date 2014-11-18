@@ -4,20 +4,20 @@ Lungo.init({
   name: 'Loqui'
 });
 
-$('document').ready(function(){
+$$('document').ready(function(){
   document.addEventListener('localized', function(e) {
-    $('section#welcome article#main h1').removeClass('hidden');
+    $$('section#welcome article#main h1').removeClass('hidden');
   });
   
   setTimeout(function(){
-    $('input[data-l10n-placeholder]').each(function () {
-      var original = $(this).data('l10n-placeholder');
+    $$('input[data-l10n-placeholder]').each(function () {
+      var original = $$(this).data('l10n-placeholder');
       var local = _(original);
-      $(this).attr('placeholder', local);
+      $$(this).attr('placeholder', local);
     });
-    $('[data-menu-onclick]').each(function () {
-      var menu = $(this).data('menu-onclick');
-      $(this).on('click', function (e) {
+    $$('[data-menu-onclick]').each(function () {
+      var menu = $$(this).data('menu-onclick');
+      $$(this).on('click', function (e) {
         Menu.show(menu, this);
       });
     });
@@ -51,7 +51,7 @@ document.body.addEventListener('offline', function () {
 }, false);
 
 // Close connections before quit
-$(window).on('beforeunload', function () {
+$$(window).on('beforeunload', function () {
   App.killAll();
 });
 
@@ -69,43 +69,46 @@ document.addEventListener("visibilitychange", function() {
 });
 
 // Type in chat text box
-$('section#chat article#main div#text').on('keydown', function (e) {
+var textBox = $$('section#chat article#main div#text');
+textBox.on('keydown', function (e) {
   if (e.which == 13) {
     e.preventDefault();
     Messenger.say();
     Messenger.csn('active');
   } else if (e.which == 8 || e.which == 46) {
     if (this.textContent.length < 2) {
-      $('section#chat article#main button#plus').show();
-      $('section#chat article#main button#say').hide();
-      $('section#chat nav#plus a').show();
-      $('section#chat nav#plus').hide();
+      $$('section#chat article#main button#plus').show();
+      $$('section#chat article#main button#say').hide();
+      $$('section#chat nav#plus a').show();
+      $$('section#chat nav#plus').hide();
       Messenger.csn('paused');
     }
   } else {
-    $('section#chat article#main button#plus').hide();
-    $('section#chat article#main button#say').show();
-    $('section#chat nav#plus').addClass('show');
-    var ul = $('section#chat ul#messages');
+    $$('section#chat article#main button#plus').hide();
+    $$('section#chat article#main button#say').show();
+    $$('section#chat nav#plus').addClass('show');
+    var ul = $$('section#chat ul#messages');
     ul[0].scrollTop = ul[0].scrollHeight;
-    if ($(this).text().length == 0) {
+    if ($$(this).text().length == 0) {
       Messenger.csn('composing');
     }
   }
-}).on('tap', function (e) {
+});
+textBox.on('tap', function (e) {
   Lungo.Router.article('chat', 'main');
   e.target.dispatchEvent(new Event('keydown'));
-  $('section#chat nav#plus').addClass('show');
-  var ul = $('section#chat ul#messages');
+  $$('section#chat nav#plus').addClass('show');
+  var ul = $$('section#chat ul#messages');
   ul[0].scrollTop = ul[0].scrollHeight + 500;
-}).on('blur', function (e) {
-  if ($(e.explicitOriginalTarget).closest('[data-control=menu]').length < 1) {
-    $('section#chat nav#plus').removeClass('show');
+});
+textBox.on('blur', function (e) {
+  if ($$(e.explicitOriginalTarget).closest('[data-control=menu]').length < 1) {
+    $$('section#chat nav#plus').removeClass('show');
   }
 });
 
 // Tap my avatar
-$('section#me #card span.avatar').on('click', function (e) {
+$$('section#me #card span.avatar').on('click', function (e) {
   if (typeof MozActivity != 'undefined') {
     var pick = new MozActivity({
       name: 'pick',
@@ -124,7 +127,7 @@ $('section#me #card span.avatar').on('click', function (e) {
 });
 
 // Change background
-$('section#me #card button.background.change').on('click', function (e) {
+$$('section#me #card button.background.change').on('click', function (e) {
   var e = new MozActivity({
     name: 'pick',
     data: {
@@ -142,8 +145,8 @@ $('section#me #card button.background.change').on('click', function (e) {
         account.core.background = Store.save(url);
       }
       Store.recover(account.core.background, function (url) {
-        $('section#chat ul#messages').style('background', 'url('+url+') no-repeat center center fixed');
-        $('section.profile div#card').style('background', 'url('+url+') no-repeat center center fixed'); 
+        $$('section#chat ul#messages').style('background', 'url('+url+') no-repeat center center fixed');
+        $$('section.profile div#card').style('background', 'url('+url+') no-repeat center center fixed');
         Lungo.Notification.show('star', _('backChanged'), 3);
       }.bind(this)); 
     });
@@ -153,31 +156,32 @@ $('section#me #card button.background.change').on('click', function (e) {
   }
 });
 
-$('section#me #card button.background.delete').on('click', function (e) {
+$$('section#me #card button.background.delete').on('click', function (e) {
   var account = Messenger.account();
   if (account.core.background) {
     Store.blockDrop(account.core.background, function () {
-      $('section#chat ul#messages').style('background', 'none');
-      $('section.profile div#card').style('background', 'none');
+      $$('section#chat ul#messages').style('background', 'none');
+      $$('section.profile div#card').style('background', 'none');
       Lungo.Notification.show('star', _('backChanged'), 3); 
     });
   }
   account.core.background = null;
 });
 
-$('section#me #status input').on('blur', function (e) {
+$$('section#me #status input').on('blur', function (e) {
   Messenger.presenceUpdate();
-}).on('keydown', function (e) {
+});
+$$('section#me #status input').on('keydown', function (e) {
   if (e.which == 13) {
     e.preventDefault();
     Messenger.presenceUpdate();
   }
 });
 
-$('[data-var]').each(function () {
-  var key = $(this).data('var');
+$$('[data-var]').each(function () {
+  var key = $$(this).data('var');
   var value = App[key];
-  $(this).text(value);
+  $$(this).text(value);
 });
 
 if (navigator.mozAlarms) {
@@ -195,39 +199,40 @@ Strophe.Connection.rawOutput = function (data) {
 };
 
 var bindings = function () {
-  $('section#success button.start').on('click', function() {
+  $$('section#success button.start').on('click', function() {
     App.start();
   });
-  $('section#contactAdd button.add').on('click', function() {
+  $$('section#contactAdd button.add').on('click', function() {
     Messenger.contactAdd();
   });
-  $('section#chat #footbox #say').on('click', function(e) {
+  $$('section#chat #footbox #say').on('click', function(e) {
     Messenger.say();
-  }).on('mousedown', function(e){
+  });
+    $$('section#chat #footbox #say').on('mousedown', function(e){
     e.preventDefault();
     e.target.classList.add('active');
   });
-  $('section#chat nav#plus a.cancel').on('click', function() {
-    $(this).parent().removeClass('show');
+  $$('section#chat nav#plus a.cancel').on('click', function() {
+    $$(this).parent().removeClass('show');
   });
-  $('section#welcome').on('click', function(){
+  $$('section#welcome').on('click', function(){
      Menu.show('providers');
   });
-  $('#debugConsole #showConsole').on('click', function () {
+  $$('#debugConsole #showConsole').on('click', function () {
     Plus.showConsole();
-    $('#debugConsole #showConsole').hide();
-    $('#debugConsole #hideConsole').show();
+    $$('#debugConsole #showConsole').hide();
+    $$('#debugConsole #hideConsole').show();
   });
-  $('#debugConsole #hideConsole').on('click', function() {
+  $$('#debugConsole #hideConsole').on('click', function() {
     Plus.hideConsole();
-    $('#debugConsole #showConsole').show();
-    $('#debugConsole #hideConsole').hide();
+    $$('#debugConsole #showConsole').show();
+    $$('#debugConsole #hideConsole').hide();
   });
-  $('#debugConsole #consoleClear').on('click', function() {
+  $$('#debugConsole #consoleClear').on('click', function() {
     Plus.clearConsole();
   });
-  $('select').on('change', function () {
-    var select = $(this);
+  $$('select').on('change', function () {
+    var select = $$(this);
     var option = select.find('option[value="' + select.val() + '"]');
     if (option.data('reveal')) {
       select.siblings('[name="' + option.data('reveal') + '"]').removeClass('hidden');
@@ -236,4 +241,4 @@ var bindings = function () {
       select.siblings('[name="' + option.data('reveal') + '"]').addClass('hidden').val('');
     }
   });
-}
+};

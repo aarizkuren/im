@@ -12,12 +12,12 @@ var Activity = function (action, account, content, options) {
   var actions = {
     chat: function (f, account, content) {
       var click = function (t) {
-        var chat = account.chatGet(t.dataset.jid, $(t).children('.name').text());
+        var chat = account.chatGet(t.dataset.jid, $$(t).children('.name').text());
         Lungo.Router.section('back');
         account.show();
         chat.show();
         if (content) {
-          $('#main #footbox #text').text(content).trigger('keydown');
+          $$('#main #footbox #text').text(content).trigger('keydown');
         }
       }
       if (options.chats) {
@@ -32,7 +32,7 @@ var Activity = function (action, account, content, options) {
     file: function (f, account, content) {
       var click = function (t) {
         var jid = t.dataset.jid;
-        var title = $(t).children('.name').text();
+        var title = $$(t).children('.name').text();
         var chat = account.chatGet(jid, title);
         for (var i in content.blobs) {
           var r = confirm(_('ConfirmMediaSend', {file: content.filenames[i], chat: title}));
@@ -58,7 +58,7 @@ var Activity = function (action, account, content, options) {
     },
     invite: function (f, account, content, options) {
       var click = function (t) {
-        var t = $(t);
+        var t = $$(t);
         t.toggleClass('selected');
         content(t.data('jid'), t.find('.name').text());
       }
@@ -82,7 +82,7 @@ var Activity = function (action, account, content, options) {
       provider.textContent = account.connector.provider.longName;
       provider.classList.add('provider');
       let name = document.createElement('span');
-      let vCard = $(account.connector.vcard);
+      let vCard = $$(account.connector.vcard);
       let address = ( vCard.length && vCard.find('FN').length ) ? vCard.find('FN').text() : account.core.user;
       name.textContent = address;
       name.classList.add('jid');
@@ -100,7 +100,7 @@ var Activity = function (action, account, content, options) {
   
   var t = '';
   var f = document.createDocumentFragment();
-  var section = $('section#activity');
+  var section = $$('section#activity');
   var article = section.children('article').empty();
   section.children('article').remove();
   
