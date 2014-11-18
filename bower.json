@@ -9,6 +9,8 @@
         "strophe": "~1.1",
         "strophejs-plugins": "https://github.com/aarizkuren/strophejs-plugins.git#~0.1",
         "quojs": "~3.0",
-        "promise-polyfill": "~1.1"
+        "promise-polyfill": "~1.1",
+        "async-storage": "https://github.com/aarizkuren/asyncStorage.git",
+        "requirejs": "~2.1"
     }
 }
